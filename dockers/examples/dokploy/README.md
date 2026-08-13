@@ -58,10 +58,13 @@ entitled to the source of *this* build. The settings sidebar links to
 `SOURCE_CODE_URL` in `apps/nextjs-app/src/lib/brand.ts` — keep that pointing at a
 repository that reflects what you actually deploy.
 
-## Automated deployment
+## Deploying in two phases
 
-`deploy.sh` creates a **new** project and deploys into it, leaving anything
-already on the VPS untouched:
+DNS is only needed for the Let's Encrypt challenge — the build and the app do
+not care. So you can deploy now and attach the domain whenever your registrar
+is available.
+
+### Phase 1 — deploy now, no DNS
 
 ```sh
 export DOKPLOY_URL=https://dokploy.bomalogic.com
@@ -69,11 +72,32 @@ export DOKPLOY_API_KEY=...        # never commit this
 ./deploy.sh
 ```
 
-It creates the project, adds a compose service pointed at this repository and
-branch, injects the environment (generating `SECRET_KEY`,
-`BACKEND_SESSION_SECRET` and the database password if you do not supply them),
-attaches the domain with a Let's Encrypt certificate, and triggers the build.
-The generated secrets are printed once at the end — save them.
+Creates a **new** project, adds a compose service pointed at this repository and
+branch, generates `SECRET_KEY`, `BACKEND_SESSION_SECRET` and the database
+password, and deploys. Nothing already on the VPS is touched.
+
+No domain is attached. `PUBLIC_ORIGIN` defaults to the VPS on port `3000`,
+addressed by the hostname your Dokploy panel already resolves to, so the app is
+usable immediately without a new DNS record. The generated secrets are printed
+once — save them.
+
+### Phase 2 — attach the domain when DNS is ready
+
+```sh
+./attach-domain.sh
+```
+
+Rewrites **only** `PUBLIC_ORIGIN` in the service's existing environment, so the
+secrets from phase 1 are preserved rather than regenerated. Then it requests the
+certificate and redeploys.
+
+It refuses to run if the domain does not resolve yet. That guard is deliberate:
+Let's Encrypt counts failed validations against a limit of 5 per hostname per
+hour, so firing early can lock you out of issuance for a while. Override with
+`SKIP_DNS_CHECK=1` only if you use a DNS-01 resolver.
+
+The origin change invalidates existing sessions, so you will log in again —
+harmless before you have users, which is why it is worth doing now.
 
 ### Why tRPC and not the REST API
 
@@ -81,9 +105,4 @@ Dokploy's documented REST surface at `/api/*` only exposes procedures that carry
 OpenAPI metadata. The `project`, `compose`, and `application` routers carry none,
 so project and service creation are not reachable there. The tRPC endpoint at
 `/api/trpc/*` does expose them, and its context accepts the same `x-api-key`
-header, so the script targets that.
-
-### DNS
-
-Point `sheet.bomalogic.com` at the VPS before deploying. Let's Encrypt validates
-over HTTP, so certificate issuance fails until the record resolves.
+header, so the scripts target that.
