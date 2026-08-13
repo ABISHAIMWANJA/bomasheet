@@ -57,3 +57,33 @@ default build timeout may need raising.
 entitled to the source of *this* build. The settings sidebar links to
 `SOURCE_CODE_URL` in `apps/nextjs-app/src/lib/brand.ts` — keep that pointing at a
 repository that reflects what you actually deploy.
+
+## Automated deployment
+
+`deploy.sh` creates a **new** project and deploys into it, leaving anything
+already on the VPS untouched:
+
+```sh
+export DOKPLOY_URL=https://dokploy.bomalogic.com
+export DOKPLOY_API_KEY=...        # never commit this
+./deploy.sh
+```
+
+It creates the project, adds a compose service pointed at this repository and
+branch, injects the environment (generating `SECRET_KEY`,
+`BACKEND_SESSION_SECRET` and the database password if you do not supply them),
+attaches the domain with a Let's Encrypt certificate, and triggers the build.
+The generated secrets are printed once at the end — save them.
+
+### Why tRPC and not the REST API
+
+Dokploy's documented REST surface at `/api/*` only exposes procedures that carry
+OpenAPI metadata. The `project`, `compose`, and `application` routers carry none,
+so project and service creation are not reachable there. The tRPC endpoint at
+`/api/trpc/*` does expose them, and its context accepts the same `x-api-key`
+header, so the script targets that.
+
+### DNS
+
+Point `sheet.bomalogic.com` at the VPS before deploying. Let's Encrypt validates
+over HTTP, so certificate issuance fails until the record resolves.
