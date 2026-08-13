@@ -1,0 +1,93 @@
+# BomaSheet — Dokploy deployment
+#
+# Unlike dockers/examples/standalone, this compose file BUILDS FROM SOURCE rather
+# than pulling ghcr.io/teableio/teable. That is deliberate: the prebuilt upstream
+# image contains stock Teable, so pulling it would discard the BomaSheet branding
+# and theme entirely.
+#
+# See README.md in this directory for the required environment variables.
+
+services:
+  bomasheet:
+    build:
+      context: ../../..
+      dockerfile: dockers/teable/Dockerfile
+      args:
+        # Sentry is upstream's error reporting and needs their DSN; leave it off.
+        SENTRY_ENABLED: 'false'
+        SENTRY_TRACING: 'false'
+    restart: always
+    ports:
+      - '3000:3000'
+    volumes:
+      - bomasheet-data:/app/.assets:rw
+    environment:
+      - TZ=${TIMEZONE:-UTC}
+      - NEXT_ENV_IMAGES_ALL_REMOTE=true
+      - PORT=3000
+      - NODE_ENV=production
+      # Must match the public URL users reach. Auth cookies and asset URLs
+      # are derived from it, so a wrong value breaks login.
+      - PUBLIC_ORIGIN=${PUBLIC_ORIGIN}
+      - BRAND_NAME=${BRAND_NAME:-BomaSheet}
+      - PRISMA_DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@bomasheet-db:5432/${POSTGRES_DB}
+      # Both default to insecure literals in code if unset — always provide them.
+      - SECRET_KEY=${SECRET_KEY}
+      - BACKEND_SESSION_SECRET=${BACKEND_SESSION_SECRET}
+      - BACKEND_CACHE_PROVIDER=sqlite
+      - BACKEND_CACHE_SQLITE_URI=sqlite:///app/.assets/cache.db
+      # Outbound mail (optional, but password reset and invites need it)
+      - BACKEND_MAIL_HOST=${BACKEND_MAIL_HOST:-}
+      - BACKEND_MAIL_PORT=${BACKEND_MAIL_PORT:-465}
+      - BACKEND_MAIL_SECURE=${BACKEND_MAIL_SECURE:-true}
+      - BACKEND_MAIL_SENDER=${BACKEND_MAIL_SENDER:-}
+      - BACKEND_MAIL_SENDER_NAME=${BACKEND_MAIL_SENDER_NAME:-BomaSheet}
+      - BACKEND_MAIL_AUTH_USER=${BACKEND_MAIL_AUTH_USER:-}
+      - BACKEND_MAIL_AUTH_PASS=${BACKEND_MAIL_AUTH_PASS:-}
+    networks:
+      - bomasheet
+    depends_on:
+      bomasheet-db-migrate:
+        condition: service_completed_successfully
+
+  bomasheet-db:
+    image: postgres:15.4
+    restart: always
+    volumes:
+      - bomasheet-db:/var/lib/postgresql/data:rw
+    environment:
+      - TZ=${TIMEZONE:-UTC}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - bomasheet
+    healthcheck:
+      test: ['CMD-SHELL', "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Built from source too, so migrations always match the app revision.
+  # Pulling upstream's :latest migrate image against a pinned app is how you
+  # get schema drift.
+  bomasheet-db-migrate:
+    build:
+      context: ../../..
+      dockerfile: dockers/teable/Dockerfile.db-migrate
+    environment:
+      - TZ=${TIMEZONE:-UTC}
+      - PRISMA_DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@bomasheet-db:5432/${POSTGRES_DB}
+    networks:
+      - bomasheet
+    depends_on:
+      bomasheet-db:
+        condition: service_healthy
+
+networks:
+  bomasheet:
+    driver: bridge
+
+volumes:
+  bomasheet-data: {}
+  bomasheet-db: {}
