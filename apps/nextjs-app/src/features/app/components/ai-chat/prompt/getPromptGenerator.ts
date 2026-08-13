@@ -1,5 +1,6 @@
 import router from 'next/router';
 import type { IUser } from 'store/user';
+import { BRAND_NAME } from '@/lib/brand';
 import { AI_SYNTAX_PROMPT } from './aiSyntaxPrompt';
 import { CREATE_TABLE_PROMPT } from './createTableByTextPrompt';
 import { GENERATE_CHART_PROMPT } from './generateChartByTextPrompt';
@@ -9,7 +10,7 @@ import { tableContext2Prompt } from './tableContext2Prompt';
 export function getPromptGeneratorOfAssistant(
   assistant: IUser
 ): (prompt: string, type?: 'chart' | 'table') => Promise<string> | string {
-  const basicPrompt = `Your name is Tai, and you are an AI assistant for Teable.
+  const basicPrompt = `Your name is Tai, and you are an AI assistant for ${BRAND_NAME}.
 Use the same natural language to respond as the one used for asking the question.
 ${AI_SYNTAX_PROMPT}
 \n`;

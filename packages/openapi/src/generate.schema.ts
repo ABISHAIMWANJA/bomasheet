@@ -61,8 +61,8 @@ export async function getOpenApiDocumentation(config: {
     openapi: '3.0.0',
     info: {
       version: '1.0.0',
-      title: 'Teable App',
-      description: `Manage Data as easy as drink a cup of tea`,
+      title: 'BomaSheet App',
+      description: `The open-source no-code database`,
     },
     servers: [{ url: origin + '/api' }],
   });

@@ -4,6 +4,7 @@ import { AnchorContext, FieldProvider, useTable, ViewProvider } from '@teable/sd
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { ErrorBoundary } from 'react-error-boundary';
+import { buildTitle } from '@/lib/brand';
 import { FailAlert } from '../table-list/FailAlert';
 import { View } from '../view/View';
 import { TableHeader } from './table-header/TableHeader';
@@ -31,8 +32,10 @@ export const Table: React.FC<ITableProps> = ({
       <Head>
         <title>
           {table?.name
-            ? `${table?.icon ? table.icon + ' ' : ''}${table.name}: ${baseServerData.name} - Teable`
-            : 'Teable'}
+            ? buildTitle(
+                `${table?.icon ? table.icon + ' ' : ''}${table.name}: ${baseServerData.name}`
+              )
+            : buildTitle()}
         </title>
       </Head>
       <ViewProvider serverData={viewServerData}>

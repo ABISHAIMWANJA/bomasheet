@@ -31,11 +31,11 @@ class MyDocument extends Document<Props> {
             href="/images/favicon/favicon-16x16.png"
           />
           <link rel="manifest" href="/images/favicon/site.webmanifest" />
-          <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5" />
+          <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#bf4a1f" />
           <link rel="shortcut icon" href="/images/favicon/favicon.svg" type="image/svg+xml" />
-          <meta name="msapplication-TileColor" content="#da532c" />
+          <meta name="msapplication-TileColor" content="#bf4a1f" />
           <meta name="msapplication-config" content="/images/favicon/browserconfig.xml" />
-          <meta name="theme-color" content="#ffffff" />
+          <meta name="theme-color" content="#bf4a1f" />
         </Head>
         <body>
           <Main />

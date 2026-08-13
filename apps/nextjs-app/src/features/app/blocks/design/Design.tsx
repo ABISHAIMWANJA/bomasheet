@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { tableConfig } from '@/features/i18n/table.config';
+import { buildTitle } from '@/lib/brand';
 import { Emoji } from '../../components/emoji/Emoji';
 import { EmojiPicker } from '../../components/emoji/EmojiPicker';
 import { DbConnectionPanel } from '../db-connection/Panel';
@@ -36,7 +37,7 @@ export const Design: React.FC<IDesignProps> = ({ fieldServerData: fields }) => {
         <title>
           {table.name
             ? `${table.icon ? table.icon + ' ' : ''}${table.name}`
-            : 'Teable' + ' - Designing'}
+            : buildTitle('Designing')}
         </title>
       </Head>
       <div className="flex h-full grow basis-[500px] flex-col gap-4 overflow-auto p-4 pt-0">

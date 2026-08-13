@@ -299,7 +299,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       params: ['text1', '[text2, ...]'],
       definition: 'CONCATENATE(text1, [text2, ...])',
       summary: 'Joins together various value types arguments into a single text value.',
-      example: 'CONCATENATE("Hello ", "Teable") => Hello Teable',
+      example: 'CONCATENATE("Hello ", "BomaSheet") => Hello BomaSheet',
     },
   ],
   [
@@ -312,7 +312,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       summary:
         'Finds an occurrence of stringToFind in whereToSearch string starting from an optional startFromPosition.(startFromPosition is 0 by default.) If no occurrence of stringToFind is found, the result will be 0.',
       example:
-        'FIND("Teable", "Hello Teable") => 7\nFIND("Teable", "Hello Teable", 5) => 7\nFIND("Teable", "Hello Teable", 10) => 0',
+        'FIND("BomaSheet", "Hello BomaSheet") => 7\nFIND("BomaSheet", "Hello BomaSheet", 5) => 7\nFIND("BomaSheet", "Hello BomaSheet", 10) => 0',
     },
   ],
   [
@@ -325,7 +325,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       summary:
         'Searches for an occurrence of stringToFind in whereToSearch string starting from an optional startFromPosition. (startFromPosition is 0 by default.) If no occurrence of stringToFind is found, the result will be empty.\nSimilar to FIND(), though FIND() returns 0 rather than empty if no occurrence of stringToFind is found.',
       example:
-        'SEARCH("Teable", "Hello Teable") => 7\nSEARCH("Teable", "Hello Teable", 5) => 7\nSEARCH("Teable", "Hello Teable", 10) => ""',
+        'SEARCH("BomaSheet", "Hello BomaSheet") => 7\nSEARCH("BomaSheet", "Hello BomaSheet", 5) => 7\nSEARCH("BomaSheet", "Hello BomaSheet", 10) => ""',
     },
   ],
   [
@@ -336,7 +336,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       params: ['text', 'whereToStart', 'count'],
       definition: 'MID(text, whereToStart, count)',
       summary: 'Extract a substring of count characters starting at whereToStart.',
-      example: 'MID("Hello Teable", 6, 6) => "Teable"',
+      example: 'MID("Hello BomaSheet", 6, 9) => "BomaSheet"',
     },
   ],
   [
@@ -370,7 +370,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       definition: 'REPLACE(text, whereToStart, count, replacement)',
       summary:
         'Replaces the number of characters beginning with the start character with the replacement text.\n(If you are looking for a way to find and replace all occurrences of old_text with new_text, see SUBSTITUTE().)',
-      example: 'REPLACE("Hello Table", 7, 5, "Teable") => "Hello Teable"',
+      example: 'REPLACE("Hello Table", 7, 5, "BomaSheet") => "Hello BomaSheet"',
     },
   ],
   [
@@ -381,7 +381,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       params: ['text', 'regular_expression', 'replacement'],
       definition: 'REGEXP_REPLACE(text, regular_expression, replacement)',
       summary: 'Replaces all substrings matching regular expression with replacement.',
-      example: 'REGEXP_REPLACE("Hello Table", "H.* ", "") => "Teable"',
+      example: 'REGEXP_REPLACE("Hello Table", "H.* ", "") => "Table"',
     },
   ],
   [
@@ -393,7 +393,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       definition: 'SUBSTITUTE(text, oldText, newText, [index])',
       summary:
         'Replaces occurrences of old_text with new_text.\nYou can optionally specify an index number (starting from 1) to replace just a specific occurrence of old_text. If no index number is specified, then all occurrences of old_text will be replaced.',
-      example: 'SUBSTITUTE("Hello Table", "Table", "Teable") => "Hello Teable"',
+      example: 'SUBSTITUTE("Hello Table", "Table", "BomaSheet") => "Hello BomaSheet"',
     },
   ],
   [
@@ -404,7 +404,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       params: ['text'],
       definition: 'LOWER(text)',
       summary: 'Makes a string lowercase.',
-      example: 'LOWER("Hello Teable") => "hello teable"',
+      example: 'LOWER("Hello BomaSheet") => "hello bomasheet"',
     },
   ],
   [
@@ -415,7 +415,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       params: ['text'],
       definition: 'UPPER(text)',
       summary: 'Makes a string uppercase.',
-      example: 'UPPER("Hello Teable") => "HELLO TEABLE"',
+      example: 'UPPER("Hello BomaSheet") => "HELLO BOMASHEET"',
     },
   ],
   [
@@ -471,7 +471,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       definition: 'ENCODE_URL_COMPONENT(value)',
       summary:
         'Replaces certain characters with encoded equivalents for use in constructing URLs or URIs. Does not encode the following characters: - _ . ~',
-      example: 'ENCODE_URL_COMPONENT("Hello Teable") => "Hello%20Teable"',
+      example: 'ENCODE_URL_COMPONENT("Hello BomaSheet") => "Hello%20BomaSheet"',
     },
   ],
 
@@ -876,7 +876,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       params: ['value1', '[value2, ...]'],
       definition: 'COUNTALL(value1, [value2, ...])',
       summary: 'Returns the number of all elements including text and blanks.',
-      example: 'COUNTALL(100, 200, "", "Teable", TRUE()) => 5',
+      example: 'COUNTALL(100, 200, "", "BomaSheet", TRUE()) => 5',
     },
   ],
   [
@@ -888,7 +888,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       definition: 'COUNTA(value1, [value2, ...])',
       summary:
         'Returns the number of non-empty values. This function counts both numeric and text values.',
-      example: 'COUNTA(100, 200, 300, "", "Teable", TRUE) => 4',
+      example: 'COUNTA(100, 200, 300, "", "BomaSheet", TRUE) => 4',
     },
   ],
   [
@@ -899,7 +899,7 @@ export const FORMULA_FUNCTIONS_MAP = new Map<FunctionName, IFunctionSchema<Funct
       params: ['value1', '[value2, ...]'],
       definition: 'COUNT(value1, [value2, ...])',
       summary: 'Returns the number of numeric items.',
-      example: 'COUNT(100, 200, 300, "", "Teable", TRUE) => 3',
+      example: 'COUNT(100, 200, 300, "", "BomaSheet", TRUE) => 3',
     },
   ],
   [

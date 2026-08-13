@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useSdkLocale } from '@/features/app/hooks/useSdkLocale';
 import { AppLayout } from '@/features/app/layouts';
 import { addQueryParamsToWebSocketUrl } from '@/features/app/utils/socket-url';
+import { BRAND_NAME } from '@/lib/brand';
 import { ShareView } from './ShareView';
 import { ShareViewPageContext } from './ShareViewPageContext';
 import { ViewProxy } from './ViewProxy';
@@ -32,7 +33,7 @@ export const ShareViewPage = (props: IShareViewPageProps) => {
   return (
     <ShareViewPageContext.Provider value={props.shareViewData}>
       <Head>
-        <title>{view?.name ?? 'Teable'}</title>
+        <title>{view?.name ?? BRAND_NAME}</title>
       </Head>
       <AppLayout>
         <AppProvider lang={i18n.language} wsPath={wsPath} locale={sdkLocale} driver={props.driver}>

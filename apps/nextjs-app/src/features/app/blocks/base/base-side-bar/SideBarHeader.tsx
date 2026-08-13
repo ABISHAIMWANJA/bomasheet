@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { hasPermission } from '@teable/core';
-import { ChevronsLeft, TeableNew, Sidebar, ChevronDown } from '@teable/icons';
+import { ChevronsLeft, BomaSheet, Sidebar, ChevronDown } from '@teable/icons';
 import { deleteBase, updateBase } from '@teable/openapi';
 import { ReactQueryKeys } from '@teable/sdk/config';
 import { useBase } from '@teable/sdk/hooks';
@@ -88,7 +88,7 @@ export const SideBarHeader = (props: ISideBarInteractionProps) => {
           {base.icon ? (
             <Emoji emoji={base.icon} size={'1.5rem'} />
           ) : (
-            <TeableNew className="size-6 text-black" />
+            <BomaSheet className="size-6 text-primary" />
           )}
         </div>
         <ChevronsLeft className="absolute top-0 size-6 opacity-0 group-hover:opacity-100" />

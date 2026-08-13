@@ -1,14 +1,14 @@
-import { TeableNew } from '@teable/icons';
+import { BomaSheet } from '@teable/icons';
 import { cn } from '@teable/ui-lib/shadcn';
 import { useTranslation } from 'next-i18next';
 import { authConfig } from '@/features/i18n/auth.config';
 
-interface ITeableHeaderProps {
+interface IAuthFooterProps {
   className?: string;
   enableClick?: boolean;
 }
 
-export const TeableFooter = (props: ITeableHeaderProps) => {
+export const AuthFooter = (props: IAuthFooterProps) => {
   const { className, enableClick } = props;
   const { t } = useTranslation(authConfig.i18nNamespaces);
 
@@ -20,7 +20,7 @@ export const TeableFooter = (props: ITeableHeaderProps) => {
         className
       )}
     >
-      <TeableNew className="size-8 text-black" />
+      <BomaSheet className="size-8 text-primary" />
       {t('common:brand')}
     </div>
   );

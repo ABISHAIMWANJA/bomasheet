@@ -1,5 +1,5 @@
 {
-  "brand": "Teable",
+  "brand": "BomaSheet",
   "actions": {
     "save": "Save",
     "doNotSave": "Don't Save",
@@ -83,7 +83,8 @@
     "nav": {
       "settings": "Settings",
       "logout": "Log out"
-    }
+    },
+    "sourceCode": "Source code"
   },
   "noun": {
     "table": "Table",
@@ -106,7 +107,7 @@
     "done": "Done",
     "skip": "Skip",
     "createSpaceTooltipTitle": "Create a space",
-    "createSpaceTooltipContent": "Teable is organized into spaces, where each space invites users to collaborate. <br></br>Spaces in Teable serve as a primary navigation element within the menu bar, offering a foundational platform for users to add and manage databases as needed.",
+    "createSpaceTooltipContent": "BomaSheet is organized into spaces, where each space invites users to collaborate. <br></br>Spaces in BomaSheet serve as a primary navigation element within the menu bar, offering a foundational platform for users to add and manage databases as needed.",
     "createBaseTooltipTitle": "Create a base",
     "createBaseTooltipContent": "A base (short for \"database\") is a place to store important data, and the workflows that depend on it.",
     "createTableTooltipTitle": "Create a table",
@@ -120,7 +121,7 @@
     "viewGroupingTooltipTitle": "Grouping records",
     "viewGroupingTooltipContent": "Grouping records allows creators to build a set of one or more conditions that will help to categorize the dataset that is being presented within a particular view.",
     "apiButtonTooltipTitle": "API",
-    "apiButtonTooltipContent": "Teable offers a powerful API that supports nearly all product features, allowing developers to make calls using an <a>Token</a>."
+    "apiButtonTooltipContent": "BomaSheet offers a powerful API that supports nearly all product features, allowing developers to make calls using an <a>Token</a>."
   },
   "token": "Token",
   "poweredBy": "Powered by <0></0>",

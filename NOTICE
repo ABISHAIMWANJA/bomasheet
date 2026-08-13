@@ -1,0 +1,55 @@
+BomaSheet
+=========
+
+BomaSheet is a derivative work ("fork") of Teable.
+
+Upstream project
+----------------
+
+  Teable
+  https://github.com/teableio/teable
+  https://teable.io
+
+  Copyright (c) the Teable authors and contributors.
+
+The overwhelming majority of the source code in this repository was written by the
+Teable authors and contributors and is used here under the terms of the GNU Affero
+General Public License, version 3.
+
+Modifications
+-------------
+
+Changes made in this fork relative to upstream Teable are limited to product
+branding and visual theming, including:
+
+  * Replacement of the product name and logo mark with "BomaSheet".
+  * A revised colour palette and theme tokens.
+  * Regenerated favicons, PWA icons, and email template styling.
+  * Documentation describing the fork and its licensing obligations.
+
+No warranty is claimed over the upstream code, and no endorsement by the Teable
+project is implied. "Teable" remains the mark of its respective owners; the
+BomaSheet name and mark are not affiliated with or endorsed by Teable.
+
+Licence
+-------
+
+This program is free software: you can redistribute it and/or modify it under the
+terms of the GNU Affero General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
+
+The full licence text is in the LICENSE file at the root of this repository.
+
+Section 13 (network use)
+------------------------
+
+If you modify this program and make it available to users over a network, you must
+provide those users with access to the complete corresponding source code of your
+modified version, at no charge, through a network server.

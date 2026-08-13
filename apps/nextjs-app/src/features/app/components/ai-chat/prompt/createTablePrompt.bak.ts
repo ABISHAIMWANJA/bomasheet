@@ -1,7 +1,7 @@
 export const CREATE_TABLE_PROMPT = `
 openapi: 3.0.0
 info:
-  title: Teable App
+  title: BomaSheet App
   description: Manage Data as easy as drink a cup of tea
   version: 1.0.0
   contact: {}

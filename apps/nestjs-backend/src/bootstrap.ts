@@ -54,7 +54,7 @@ export async function setUpAppMiddleware(app: INestApplication, configService: C
     const redocOptions: RedocOptions = {
       logo: {
         backgroundColor: '#F0F0F0',
-        altText: 'Teable logo',
+        altText: 'BomaSheet logo',
       },
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

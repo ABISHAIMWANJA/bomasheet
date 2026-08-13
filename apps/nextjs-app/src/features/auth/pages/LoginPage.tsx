@@ -1,5 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { TeableNew } from '@teable/icons';
+import { BomaSheet } from '@teable/icons';
 import { createQueryClient } from '@teable/sdk/context/app/queryClient';
 import { Tabs, TabsList, TabsTrigger } from '@teable/ui-lib/shadcn';
 import { useRouter } from 'next/router';
@@ -27,7 +27,7 @@ export const LoginPage: FC = () => {
       <div className="fixed h-screen w-full overflow-y-auto">
         <div className="absolute left-0 flex h-[4em] w-full items-center justify-between bg-background px-5 lg:h-20">
           <div className="flex h-full items-center gap-2">
-            <TeableNew className="size-8 text-black" />
+            <BomaSheet className="size-8 text-primary" />
             {t('common:brand')}
           </div>
           <Tabs value={signType} onValueChange={(val) => setSignType(val as ISignForm['type'])}>

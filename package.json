@@ -1,16 +1,22 @@
 {
-  "name": "@teable/teable",
+  "name": "bomasheet",
   "license": "AGPL-3.0",
   "private": true,
-  "homepage": "https://github.com/teableio/teable",
+  "homepage": "https://github.com/ABISHAIMWANJA/bomasheet",
   "repository": {
     "type": "git",
-    "url": "https://github.com/teableio/teable"
+    "url": "https://github.com/ABISHAIMWANJA/bomasheet"
   },
   "author": {
-    "name": "tea artist",
-    "url": "https://github.com/tea-artist"
+    "name": "Abishai Mwanja",
+    "url": "https://github.com/ABISHAIMWANJA"
   },
+  "contributors": [
+    {
+      "name": "The Teable authors and contributors",
+      "url": "https://github.com/teableio/teable"
+    }
+  ],
   "keywords": [
     "teable",
     "database"

@@ -1,8 +1,9 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
-import { TeableNew } from '@teable/icons';
+import { BomaSheet } from '@teable/icons';
 import { ActionTriggerProvider, RecordProvider } from '@teable/sdk/context';
 import { useIsHydrated } from '@teable/sdk/hooks';
 import { useContext } from 'react';
+import { BRAND_NAME } from '@/lib/brand';
 import { ShareViewPageContext } from '../../ShareViewPageContext';
 import { AggregationProvider, RowCountProvider, GroupPointProvider } from './aggregation';
 import { GridViewBase } from './GridViewBase';
@@ -17,8 +18,8 @@ export const GridView = () => {
       <div className="flex w-full justify-between py-3">
         <h1 className="text-lg font-semibold">{view?.name}</h1>
         <a href="/" className="flex items-center">
-          <TeableNew className="text-2xl text-black" />
-          <p className="ml-1 font-semibold">Teable</p>
+          <BomaSheet className="text-2xl text-primary" />
+          <p className="ml-1 font-semibold">{BRAND_NAME}</p>
         </a>
       </div>
       <div className="flex w-full grow flex-col overflow-hidden rounded border shadow-md">

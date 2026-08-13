@@ -9,7 +9,7 @@ export const mailConfig = registerAs('mail', () => ({
   port: parseInt(process.env.BACKEND_MAIL_PORT ?? '465', 10),
   secure: Object.is(process.env.BACKEND_MAIL_SECURE ?? 'true', 'true'),
   sender: process.env.BACKEND_MAIL_SENDER ?? 'noreply.teable.io',
-  senderName: process.env.BACKEND_MAIL_SENDER_NAME ?? 'Teable',
+  senderName: process.env.BACKEND_MAIL_SENDER_NAME ?? 'BomaSheet',
   auth: {
     user: process.env.BACKEND_MAIL_AUTH_USER,
     pass: process.env.BACKEND_MAIL_AUTH_PASS,

@@ -1,5 +1,5 @@
 {
-  "brand": "Teable",
+  "brand": "BomaSheet",
   "actions": {
     "save": "保存",
     "doNotSave": "不保存",
@@ -83,7 +83,8 @@
     "nav": {
       "settings": "设置",
       "logout": "退出登录"
-    }
+    },
+    "sourceCode": "源代码"
   },
   "noun": {
     "table": "表格",
@@ -120,7 +121,7 @@
     "viewGroupingTooltipTitle": "记录分组",
     "viewGroupingTooltipContent": "记录分组允许创建者构建一组一个或多个条件，这将有助于对特定视图中呈现的数据集进行分类。",
     "apiButtonTooltipTitle": "API",
-    "apiButtonTooltipContent": "Teable 提供了强大的 API，支持几乎所有的产品功能，允许开发者使用<a>令牌</a>进行调用。"
+    "apiButtonTooltipContent": "BomaSheet 提供了强大的 API，支持几乎所有的产品功能，允许开发者使用<a>令牌</a>进行调用。"
   },
   "token": "令牌",
   "poweredBy": "<0></0> 提供技术支持",
