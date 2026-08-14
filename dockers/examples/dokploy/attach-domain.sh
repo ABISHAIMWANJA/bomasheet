@@ -41,7 +41,7 @@ COMPOSE_ID=$(find_compose_id "${PROJECT_NAME}" "${APP_NAME}")
 echo "    compose=${COMPOSE_ID}"
 
 echo "==> Rewriting PUBLIC_ORIGIN to https://${DOMAIN}"
-CURRENT_ENV=$(api "compose.one" "$(CID="${COMPOSE_ID}" pyjson "{'composeId': os.environ['CID']}")" \
+CURRENT_ENV=$(api_query "compose.one" "$(CID="${COMPOSE_ID}" pyjson "{'composeId': os.environ['CID']}")" \
   | jqr "['result']['data']['json']['env'] or ''")
 
 export NEW_ENV
