@@ -160,12 +160,15 @@ The same key also powers the pre-existing AI chat feature -- both read
 `OPENAI_API_KEY`/`OPENAI_API_ENDPOINT`, so there is one credential to manage,
 not two.
 
-The frontend registers the field type (icon, label, selectable in the "add
-field" menu) and cell values render through the grid's existing generic
-string renderer. Not yet built: a dedicated prompt-editor form (field
-creation currently takes the type's default empty options) and an in-grid
-"Generate" trigger button -- real UI work, tracked as the next increment
-rather than rushed here.
+The frontend is now wired end to end: the field type appears in the picker
+(gated -- see feature gating below), configuring it gives a prompt editor with
+one-click buttons to insert `{fieldName}` references, and the cell editor has
+a **Generate** button that calls the endpoint and writes the result back.
+
+`sourceFieldIds` is kept in sync with whichever fields the prompt actually
+mentions, so the stored options record that dependency instead of leaving it
+implicit. Generate is disabled until the record exists, since generation
+writes to a record server-side.
 
 ## BomaClaw (Telegram bot)
 

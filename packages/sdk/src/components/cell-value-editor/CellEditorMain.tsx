@@ -22,6 +22,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useTableId } from '../../hooks';
 import { Field } from '../../model';
 import {
+  AiEditor,
   AttachmentEditor,
   CheckboxEditor,
   DateEditor,
@@ -195,6 +196,19 @@ export const CellEditorMain = (props: Omit<ICellValueEditor, 'wrapClassName' | '
           readonly={readonly}
           fieldId={field.id}
           recordId={recordId}
+        />
+      );
+    }
+    case FieldType.Ai: {
+      return (
+        <AiEditor
+          tableId={tableId}
+          recordId={recordId}
+          fieldId={field.id}
+          value={cellValue as string | null}
+          onChange={onChange as (value: string | null) => void}
+          readonly={readonly}
+          className={className}
         />
       );
     }

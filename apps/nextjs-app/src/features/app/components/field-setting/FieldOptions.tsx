@@ -1,4 +1,5 @@
 import type {
+  IAiFieldOptions,
   IFieldVo,
   IDateFieldOptions,
   IFormulaFieldOptions,
@@ -13,6 +14,7 @@ import type {
   IUserFieldOptions,
 } from '@teable/core';
 import { FieldType } from '@teable/core';
+import { AiOptions } from './options/AiOptions';
 import { CreatedTimeOptions } from './options/CreatedTimeOptions';
 import { DateOptions } from './options/DateOptions';
 import { FormulaOptions } from './options/FormulaOptions';
@@ -76,6 +78,8 @@ export const FieldOptions: React.FC<IFieldOptionsProps> = ({ field, onChange }) 
           onChange={onChange}
         />
       );
+    case FieldType.Ai:
+      return <AiOptions options={options as IAiFieldOptions} onChange={onChange} />;
     case FieldType.User:
       return (
         <UserOptions
