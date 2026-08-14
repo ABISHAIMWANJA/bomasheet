@@ -106,3 +106,29 @@ OpenAPI metadata. The `project`, `compose`, and `application` routers carry none
 so project and service creation are not reachable there. The tRPC endpoint at
 `/api/trpc/*` does expose them, and its context accepts the same `x-api-key`
 header, so the scripts target that.
+
+## Free-tier row limit
+
+Teable Cloud caps free spaces at a fixed row count. The mechanism already
+exists in the backend (`record.service.ts` `creditCheck()`, gated on the
+`space.credit` column) but ships disabled upstream. `deploy.sh` turns it on
+with `MAX_FREE_ROW_LIMIT` (default `1000`).
+
+For a deployment that's already running:
+
+```sh
+export DOKPLOY_URL=https://dokploy.bomalogic.com
+export DOKPLOY_API_KEY=...
+MAX_FREE_ROW_LIMIT=1000 ./set-row-limit.sh
+```
+
+Use `0` to disable the cap. An individual space's `credit` column, when set,
+overrides the default for that one space -- that's the lever for a specific
+customer, without touching the global default.
+
+Only rows are covered. Storage and automation-run caps are not implemented:
+storage is content-addressed and deduplicated by hash across spaces, so a
+correct per-space quota needs a real accounting design, not a guessed hook;
+automation-run history is tracked in the database but this codebase's
+execution entry point wasn't traced far enough to hook safely. Both are
+buildable, just not blind.

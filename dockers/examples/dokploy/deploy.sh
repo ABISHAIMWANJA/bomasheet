@@ -36,6 +36,14 @@ POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$(openssl rand -hex 24)}"
 POSTGRES_USER="${POSTGRES_USER:-bomasheet}"
 POSTGRES_DB="${POSTGRES_DB:-bomasheet}"
 
+# Free-tier row cap per space. This mechanism already exists in Teable
+# (record.service.ts creditCheck(), gated on space.credit) but ships disabled
+# upstream (default 0 = unlimited). 0 keeps that upstream behavior; set to
+# match whatever free-tier row count you're offering. A space's individual
+# `credit` column, when set, overrides this default for that one space --
+# that's the lever for comping a specific customer more rows later.
+MAX_FREE_ROW_LIMIT="${MAX_FREE_ROW_LIMIT:-1000}"
+
 echo "==> Creating project '${PROJECT_NAME}'"
 PROJECT_JSON=$(api "project.create" "$(
   NAME="${PROJECT_NAME}" pyjson "{'name': os.environ['NAME'], 'description': 'BomaSheet - AGPL fork of Teable'}"
@@ -68,7 +76,8 @@ POSTGRES_DB=${POSTGRES_DB}
 POSTGRES_USER=${POSTGRES_USER}
 POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 SECRET_KEY=${SECRET_KEY}
-BACKEND_SESSION_SECRET=${BACKEND_SESSION_SECRET}"
+BACKEND_SESSION_SECRET=${BACKEND_SESSION_SECRET}
+MAX_FREE_ROW_LIMIT=${MAX_FREE_ROW_LIMIT}"
 
 api "compose.update" "$(
   CID="${COMPOSE_ID}" URL="${REPO_URL}" BRANCH="${REPO_BRANCH}" CPATH="${COMPOSE_PATH}" \
