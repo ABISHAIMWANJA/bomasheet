@@ -1,6 +1,13 @@
-import { z } from 'zod';
+// Import the openapi-extended zod, not bare 'zod'. `.openapi()` is a prototype
+// extension applied by packages/core/src/zod.ts via extendZodWithOpenApi();
+// bare 'zod' only has it once some other module has already triggered that
+// side effect. Sibling field files import bare 'zod' and happen to work
+// because they load later -- this file is exported first from ./index.ts, so
+// it would crash at require time with "z.string(...).min(...).openapi is not
+// a function". Importing the extended module makes load order irrelevant.
 import type { CellValueType, FieldType } from '../constant';
 import { FieldCore } from '../field';
+import { z } from '../../../zod';
 
 export const aiFieldOptionsSchema = z.object({
   prompt: z.string().min(1).openapi({
