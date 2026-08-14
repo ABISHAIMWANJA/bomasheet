@@ -24,7 +24,23 @@ REPO_URL="${REPO_URL:-https://github.com/ABISHAIMWANJA/bomasheet}"
 REPO_BRANCH="${REPO_BRANCH:-claude/teable-fork-theme-gbjuzn}"
 COMPOSE_PATH="${COMPOSE_PATH:-./dockers/examples/dokploy/bomaclaw/docker-compose.yaml}"
 
-TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:?set TELEGRAM_BOT_TOKEN, from @BotFather}"
+# At least one platform must be configured. Telegram needs only a bot token;
+# either WhatsApp provider needs its own credentials plus a public HTTPS URL.
+TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-}"
+BOMACLAW_PUBLIC_URL="${BOMACLAW_PUBLIC_URL:-}"
+META_WHATSAPP_ACCESS_TOKEN="${META_WHATSAPP_ACCESS_TOKEN:-}"
+META_WHATSAPP_PHONE_NUMBER_ID="${META_WHATSAPP_PHONE_NUMBER_ID:-}"
+META_WHATSAPP_VERIFY_TOKEN="${META_WHATSAPP_VERIFY_TOKEN:-}"
+META_WHATSAPP_APP_SECRET="${META_WHATSAPP_APP_SECRET:-}"
+TWILIO_ACCOUNT_SID="${TWILIO_ACCOUNT_SID:-}"
+TWILIO_AUTH_TOKEN="${TWILIO_AUTH_TOKEN:-}"
+TWILIO_WHATSAPP_FROM="${TWILIO_WHATSAPP_FROM:-}"
+
+if [ -z "${TELEGRAM_BOT_TOKEN}" ] && [ -z "${META_WHATSAPP_ACCESS_TOKEN}" ] \
+   && [ -z "${TWILIO_ACCOUNT_SID}" ]; then
+  echo "Configure at least one platform: TELEGRAM_BOT_TOKEN, META_WHATSAPP_*, or TWILIO_*." >&2
+  exit 1
+fi
 BOMACLAW_ENCRYPTION_KEY="${BOMACLAW_ENCRYPTION_KEY:-$(openssl rand -hex 32)}"
 OPENAI_API_KEY="${OPENAI_API_KEY:?set OPENAI_API_KEY -- the same key BomaSheet AI features use}"
 OPENAI_API_ENDPOINT="${OPENAI_API_ENDPOINT:-https://api.openai.com}"
@@ -68,6 +84,14 @@ echo "    compose=${COMPOSE_ID}"
 
 echo "==> Pointing it at ${REPO_URL} (${REPO_BRANCH})"
 export ENV_BLOCK="TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+BOMACLAW_PUBLIC_URL=${BOMACLAW_PUBLIC_URL}
+META_WHATSAPP_ACCESS_TOKEN=${META_WHATSAPP_ACCESS_TOKEN}
+META_WHATSAPP_PHONE_NUMBER_ID=${META_WHATSAPP_PHONE_NUMBER_ID}
+META_WHATSAPP_VERIFY_TOKEN=${META_WHATSAPP_VERIFY_TOKEN}
+META_WHATSAPP_APP_SECRET=${META_WHATSAPP_APP_SECRET}
+TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+TWILIO_WHATSAPP_FROM=${TWILIO_WHATSAPP_FROM}
 BOMASHEET_ORIGIN=${BOMASHEET_ORIGIN}
 BOMACLAW_ENCRYPTION_KEY=${BOMACLAW_ENCRYPTION_KEY}
 OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -101,6 +125,13 @@ Save this now -- it is not stored anywhere else:
 
   BOMACLAW_ENCRYPTION_KEY=${BOMACLAW_ENCRYPTION_KEY}
 
-Once it's running, open Telegram, find your bot (the username you set with
-@BotFather), and send /start.
+Telegram: message your bot and send /start.
+
+WhatsApp: attach a domain to the '${BOT_APP_NAME}' service in Dokploy, set
+BOMACLAW_PUBLIC_URL to it, then point your provider's webhook at:
+
+  Meta:   <public-url>/webhook/whatsapp/meta
+  Twilio: <public-url>/webhook/whatsapp/twilio
+
+Health check (shows which providers are active): <public-url>/health
 EOF

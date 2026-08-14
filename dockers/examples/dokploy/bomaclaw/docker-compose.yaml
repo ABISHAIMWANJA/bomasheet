@@ -1,12 +1,15 @@
 # BomaClaw — deployed as its own Dokploy service, independent of BomaSheet's
-# own build and release lifecycle. Long-polls Telegram, so no domain, TLS, or
-# published port is needed.
+# own build and release lifecycle.
+#
+# Telegram long-polls and needs nothing public. Both WhatsApp providers push
+# webhooks instead, so the HTTP port must be reachable over HTTPS for those;
+# attach a domain to this service in Dokploy and set BOMACLAW_PUBLIC_URL.
 
 services:
   bomaclaw:
     build:
       context: ../../..
-      dockerfile: apps/telegram-bot/Dockerfile
+      dockerfile: apps/bomaclaw/Dockerfile
     restart: always
     volumes:
       - bomaclaw-data:/app/data:rw
@@ -18,6 +21,21 @@ services:
       - OPENAI_API_ENDPOINT=${OPENAI_API_ENDPOINT:-https://api.openai.com}
       - AI_FIELD_MODEL=${AI_FIELD_MODEL:-gpt-3.5-turbo}
       - BOMACLAW_DB_PATH=/app/data/bomaclaw.sqlite
+      - PORT=3000
+      # Public HTTPS URL of THIS service. Twilio signs the exact URL it posts
+      # to, so signature validation fails without it.
+      - BOMACLAW_PUBLIC_URL=${BOMACLAW_PUBLIC_URL:-}
+      # WhatsApp via Meta Cloud API (optional)
+      - META_WHATSAPP_ACCESS_TOKEN=${META_WHATSAPP_ACCESS_TOKEN:-}
+      - META_WHATSAPP_PHONE_NUMBER_ID=${META_WHATSAPP_PHONE_NUMBER_ID:-}
+      - META_WHATSAPP_VERIFY_TOKEN=${META_WHATSAPP_VERIFY_TOKEN:-}
+      - META_WHATSAPP_APP_SECRET=${META_WHATSAPP_APP_SECRET:-}
+      # WhatsApp via Twilio (optional)
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID:-}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN:-}
+      - TWILIO_WHATSAPP_FROM=${TWILIO_WHATSAPP_FROM:-}
+    expose:
+      - '3000'
 
 volumes:
   bomaclaw-data: {}

@@ -170,11 +170,14 @@ mentions, so the stored options record that dependency instead of leaving it
 implicit. Generate is disabled until the record exists, since generation
 writes to a record server-side.
 
-## BomaClaw (Telegram bot)
+## BomaClaw (Telegram + WhatsApp)
 
-A standalone app, `apps/telegram-bot`, that lets a user query and edit their
-own BomaSheet data by chatting with a Telegram bot. It is deliberately kept
-separate from BomaSheet itself:
+A standalone app, `apps/bomaclaw`, that lets a user query and edit their own
+BomaSheet data by chat. Supports Telegram and WhatsApp, and WhatsApp through
+either Meta's Cloud API or Twilio. Each platform activates only when its
+credentials are present, so you can run one, two, or all three.
+
+It is deliberately kept separate from BomaSheet itself:
 
 - **Not in the pnpm workspace.** `pnpm-workspace.yaml` excludes it, the same
   way `apps/electron` is excluded. The main Dockerfile runs
@@ -186,8 +189,15 @@ separate from BomaSheet itself:
   bot then calls BomaSheet's existing public REST API with that token --
   BomaSheet's own permission system decides what the bot can and can't do.
   No new access-control logic was written for this.
-- **Long-polls Telegram** rather than receiving webhooks, so it needs no
-  domain, TLS, or published port.
+- **Telegram long-polls**, needing no domain or TLS. **Both WhatsApp providers
+  push webhooks**, so those need this service reachable over public HTTPS --
+  attach a domain to it in Dokploy and set `BOMACLAW_PUBLIC_URL`.
+- **Webhook requests are signature-verified.** Meta: HMAC-SHA256 of the raw
+  body against `META_WHATSAPP_APP_SECRET`, compared constant-time. Twilio:
+  delegated to the official SDK's `validateRequest`, because the algorithm
+  signs the exact URL plus sorted parameters and small deviations break it
+  silently. Meta's raw bytes are captured before JSON parsing -- re-serializing
+  a parsed body does not reproduce them and would fail every check.
 - **No background job queue**, so there is no scheduled/proactive messaging
   -- it only responds to messages sent to it.
 - Tokens are stored in a local SQLite file, AES-256-GCM encrypted with a
@@ -200,12 +210,40 @@ and public origin, not a value you pass in):
 ```sh
 export DOKPLOY_URL=https://dokploy.bomalogic.com
 export DOKPLOY_API_KEY=...
-export TELEGRAM_BOT_TOKEN=...   # from @BotFather
 export OPENAI_API_KEY=sk-...    # same key BomaSheet's AI features use
+
+# Telegram (optional)
+export TELEGRAM_BOT_TOKEN=...   # from @BotFather
+
+# WhatsApp via Meta Cloud API (optional)
+export BOMACLAW_PUBLIC_URL=https://claw.example.com
+export META_WHATSAPP_ACCESS_TOKEN=...
+export META_WHATSAPP_PHONE_NUMBER_ID=...
+export META_WHATSAPP_VERIFY_TOKEN=any-string-you-choose
+export META_WHATSAPP_APP_SECRET=...
+
+# WhatsApp via Twilio (optional)
+export TWILIO_ACCOUNT_SID=...
+export TWILIO_AUTH_TOKEN=...
+export TWILIO_WHATSAPP_FROM='whatsapp:+14155238886'
+
 ./deploy-bomaclaw.sh
 ```
 
-Then message the bot on Telegram: `/start`.
+At least one platform must be configured or the script refuses to run.
+
+Webhook URLs to register with the provider:
+
+| Provider | URL |
+| --- | --- |
+| Meta | `<BOMACLAW_PUBLIC_URL>/webhook/whatsapp/meta` |
+| Twilio | `<BOMACLAW_PUBLIC_URL>/webhook/whatsapp/twilio` |
+
+`GET /health` reports which providers are active. Meta additionally performs a
+one-time `GET` verification handshake against its webhook URL, which the
+service answers using `META_WHATSAPP_VERIFY_TOKEN`.
+
+Then message the bot: `/start`, then `/connect <token>`.
 
 ## Build memory, and the "cancelled" deployment status
 

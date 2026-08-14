@@ -6,6 +6,9 @@ import { config } from './config';
 
 const ALGO = 'aes-256-gcm';
 
+/** Chat platforms a user can connect from. */
+export type IPlatform = 'telegram' | 'whatsapp';
+
 function loadKey(): Buffer {
   const key = Buffer.from(config.encryptionKey, 'hex');
   if (key.length !== 32) {
@@ -48,40 +51,46 @@ export class TokenStore {
     mkdirSync(dirname(path), { recursive: true });
     this.db = new Database(path);
     this.db.pragma('journal_mode = WAL');
+    // Keyed by (platform, external id): the same person may connect from
+    // Telegram and WhatsApp independently, and the ids are unrelated
+    // namespaces -- a Telegram numeric id and a WhatsApp phone number could
+    // otherwise collide in a single-column key.
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS connections (
-        telegram_user_id TEXT PRIMARY KEY,
+        platform TEXT NOT NULL,
+        external_id TEXT NOT NULL,
         encrypted_token TEXT NOT NULL,
-        connected_at TEXT NOT NULL
+        connected_at TEXT NOT NULL,
+        PRIMARY KEY (platform, external_id)
       );
     `);
   }
 
-  connect(telegramUserId: number, personalAccessToken: string): void {
+  connect(platform: IPlatform, externalId: string, personalAccessToken: string): void {
     this.db
       .prepare(
-        `INSERT INTO connections (telegram_user_id, encrypted_token, connected_at)
-         VALUES (?, ?, ?)
-         ON CONFLICT(telegram_user_id) DO UPDATE SET
+        `INSERT INTO connections (platform, external_id, encrypted_token, connected_at)
+         VALUES (?, ?, ?, ?)
+         ON CONFLICT(platform, external_id) DO UPDATE SET
            encrypted_token = excluded.encrypted_token,
            connected_at = excluded.connected_at`
       )
-      .run(String(telegramUserId), encrypt(personalAccessToken), new Date().toISOString());
+      .run(platform, externalId, encrypt(personalAccessToken), new Date().toISOString());
   }
 
-  getToken(telegramUserId: number): string | undefined {
+  getToken(platform: IPlatform, externalId: string): string | undefined {
     const row = this.db
-      .prepare<[string], { encrypted_token: string }>(
-        'SELECT encrypted_token FROM connections WHERE telegram_user_id = ?'
+      .prepare<[string, string], { encrypted_token: string }>(
+        'SELECT encrypted_token FROM connections WHERE platform = ? AND external_id = ?'
       )
-      .get(String(telegramUserId));
+      .get(platform, externalId);
     return row ? decrypt(row.encrypted_token) : undefined;
   }
 
-  disconnect(telegramUserId: number): boolean {
+  disconnect(platform: IPlatform, externalId: string): boolean {
     const result = this.db
-      .prepare('DELETE FROM connections WHERE telegram_user_id = ?')
-      .run(String(telegramUserId));
+      .prepare('DELETE FROM connections WHERE platform = ? AND external_id = ?')
+      .run(platform, externalId);
     return result.changes > 0;
   }
 
