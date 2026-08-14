@@ -236,3 +236,43 @@ echo '/swapfile none swap sw 0 0' >> /etc/fstab
 Note also that a cancelled deployment may still have produced a working image:
 `docker build` continues independently of Dokploy losing track of it. Check
 `docker ps --filter name=bomasheet` before assuming a rebuild is needed.
+
+## Admin-only feature gating
+
+New features can be made visible to named admins first, then released to
+everyone once they are ready.
+
+There is no admin role in the database -- the `User` model has no `role`
+column, and collaborator roles are per-space only. Rather than add a schema
+migration for this, admins are named by email in an environment variable, so
+both gating a feature and releasing it are config changes plus a redeploy.
+
+Two variables drive it:
+
+| Variable | Meaning |
+| --- | --- |
+| `INSTANCE_ADMIN_EMAILS` | Comma-separated emails that count as instance admins. |
+| `BETA_FEATURES` | Comma-separated feature names visible **only** to those admins. |
+
+A feature named in `BETA_FEATURES` is hidden from everyone except the listed
+admins. Remove the name and it becomes visible to all users.
+
+On a deployment already running:
+
+```sh
+export DOKPLOY_URL=https://dokploy.bomalogic.com
+export DOKPLOY_API_KEY=...
+
+# admin-only preview
+INSTANCE_ADMIN_EMAILS=you@example.com BETA_FEATURES=aiField ./set-feature-gating.sh
+
+# release to everyone
+INSTANCE_ADMIN_EMAILS=you@example.com BETA_FEATURES= ./set-feature-gating.sh
+```
+
+The decision is made server-side: the backend only ever puts a feature name in
+the user payload for an instance admin, so a normal user cannot unhide a gated
+feature from the browser. Sign out and back in after changing it -- the flags
+ride along with the session's user payload.
+
+Currently gated: `aiField`.

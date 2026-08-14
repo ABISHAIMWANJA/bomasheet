@@ -12,6 +12,7 @@ import {
   signupSchema,
 } from '@teable/openapi';
 import { Response, Request } from 'express';
+import { FeatureConfig, IFeatureConfig, resolveFeatureAccess } from '../../configs/feature.config';
 import { AUTH_SESSION_COOKIE_NAME } from '../../const';
 import { ZodValidationPipe } from '../../zod.validation.pipe';
 import { AuthService } from './auth.service';
@@ -21,7 +22,10 @@ import { pickUserMe } from './utils';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    @FeatureConfig() private readonly featureConfig: IFeatureConfig
+  ) {}
 
   @Public()
   @UseGuards(LocalAuthGuard)
@@ -55,7 +59,15 @@ export class AuthController {
 
   @Get('/user/me')
   async me(@Req() request: Express.Request) {
-    return { ...request.user!, _session_ticket: request.sessionID };
+    const user = request.user!;
+    // Instance-level feature gating rides along with the existing user
+    // payload rather than a separate endpoint, so the frontend gets it from
+    // the useSession() context it already reads.
+    const access = resolveFeatureAccess(
+      (user as { email?: string }).email,
+      this.featureConfig
+    );
+    return { ...user, ...access, _session_ticket: request.sessionID };
   }
 
   @Patch('/change-password')

@@ -52,6 +52,13 @@ OPENAI_API_KEY="${OPENAI_API_KEY:-}"
 OPENAI_API_ENDPOINT="${OPENAI_API_ENDPOINT:-https://api.openai.com}"
 AI_FIELD_MODEL="${AI_FIELD_MODEL:-gpt-3.5-turbo}"
 
+# Instance-level feature gating. Emails listed here see features named in
+# BETA_FEATURES; everyone else does not, until a name is removed from that
+# list. There is no admin role in the database -- this is config only, so
+# rolling a feature out is an env change, not a schema change.
+INSTANCE_ADMIN_EMAILS="${INSTANCE_ADMIN_EMAILS:-}"
+BETA_FEATURES="${BETA_FEATURES:-aiField}"
+
 echo "==> Creating project '${PROJECT_NAME}'"
 PROJECT_JSON=$(api "project.create" "$(
   NAME="${PROJECT_NAME}" pyjson "{'name': os.environ['NAME'], 'description': 'BomaSheet - AGPL fork of Teable'}"
@@ -88,7 +95,9 @@ BACKEND_SESSION_SECRET=${BACKEND_SESSION_SECRET}
 MAX_FREE_ROW_LIMIT=${MAX_FREE_ROW_LIMIT}
 OPENAI_API_KEY=${OPENAI_API_KEY}
 OPENAI_API_ENDPOINT=${OPENAI_API_ENDPOINT}
-AI_FIELD_MODEL=${AI_FIELD_MODEL}"
+AI_FIELD_MODEL=${AI_FIELD_MODEL}
+INSTANCE_ADMIN_EMAILS=${INSTANCE_ADMIN_EMAILS}
+BETA_FEATURES=${BETA_FEATURES}"
 
 api "compose.update" "$(
   CID="${COMPOSE_ID}" URL="${REPO_URL}" BRANCH="${REPO_BRANCH}" CPATH="${COMPOSE_PATH}" \

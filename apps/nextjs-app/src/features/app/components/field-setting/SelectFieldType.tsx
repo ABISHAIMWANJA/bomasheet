@@ -1,5 +1,5 @@
 import { FieldType } from '@teable/core';
-import { FIELD_TYPE_ORDER, useFieldStaticGetter } from '@teable/sdk';
+import { BetaFeature, FIELD_TYPE_ORDER, useBetaFeature, useFieldStaticGetter } from '@teable/sdk';
 import { Selector } from '@teable/ui-lib/base';
 import SearchIcon from '@teable/ui-lib/icons/app/search.svg';
 import { useTranslation } from 'next-i18next';
@@ -13,10 +13,15 @@ export const SelectFieldType = (props: {
   const { value = FieldType.SingleLineText, onChange } = props;
   const getFieldStatic = useFieldStaticGetter();
   const { t } = useTranslation(tableConfig.i18nNamespaces);
+  // Gated field types stay hidden until the server says this user may see
+  // them -- see BETA_FEATURES / INSTANCE_ADMIN_EMAILS in the backend config.
+  const canUseAiField = useBetaFeature(BetaFeature.AiField);
 
   const candidates = useMemo(
     () =>
-      FIELD_TYPE_ORDER.map<{ id: FieldType | 'lookup'; name: string; icon: JSX.Element }>(
+      FIELD_TYPE_ORDER.filter(
+        (type) => type !== FieldType.Ai || canUseAiField
+      ).map<{ id: FieldType | 'lookup'; name: string; icon: JSX.Element }>(
         (type) => {
           const { title, Icon } = getFieldStatic(type, false);
           return {
@@ -30,7 +35,7 @@ export const SelectFieldType = (props: {
         name: t('sdk:field.title.lookup'),
         icon: <SearchIcon className="size-4" />,
       }),
-    [getFieldStatic, t]
+    [getFieldStatic, t, canUseAiField]
   );
 
   return (

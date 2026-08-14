@@ -14,6 +14,15 @@ export const userMeVoSchema = z.object({
   phone: z.string().nullable().optional(),
   notifyMeta: userNotifyMetaSchema,
   hasPassword: z.boolean(),
+  // Instance-level feature gating. Optional so any client reading an older
+  // deployment's response still validates.
+  isInstanceAdmin: z.boolean().optional().openapi({
+    description: 'Whether this user is listed in INSTANCE_ADMIN_EMAILS.',
+  }),
+  betaFeatures: z.array(z.string()).optional().openapi({
+    description:
+      'Gated features this user may see. Empty for non-admins until a feature is removed from BETA_FEATURES.',
+  }),
 });
 
 export type IUserMeVo = z.infer<typeof userMeVoSchema>;

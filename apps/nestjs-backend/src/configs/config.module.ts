@@ -8,6 +8,7 @@ import { baseConfig } from './base.config';
 import { bootstrapConfigs, nextJsConfig } from './bootstrap.config';
 import { cacheConfig } from './cache.config';
 import { envValidationSchema } from './env.validation.schema';
+import { featureConfig } from './feature.config';
 import { loggerConfig } from './logger.config';
 import { mailConfig } from './mail.config';
 import { storageConfig } from './storage';
@@ -22,6 +23,7 @@ const configurations = [
   storageConfig,
   thresholdConfig,
   cacheConfig,
+  featureConfig,
 ];
 
 @Module({})
