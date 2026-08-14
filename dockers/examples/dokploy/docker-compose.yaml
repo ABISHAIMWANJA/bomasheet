@@ -16,6 +16,10 @@ services:
         # Sentry is upstream's error reporting and needs their DSN; leave it off.
         SENTRY_ENABLED: 'false'
         SENTRY_TRACING: 'false'
+        # V8 old-space cap for the Next.js build. Must stay below the host's
+        # free RAM -- see the NODE_HEAP_MB comment in dockers/teable/Dockerfile
+        # for why the upstream default of 8192 can OOM-kill the whole box.
+        NODE_HEAP_MB: '${NODE_HEAP_MB:-4096}'
     restart: always
     ports:
       # Host port 3000 is taken by Dokploy's own dashboard on this VPS. This

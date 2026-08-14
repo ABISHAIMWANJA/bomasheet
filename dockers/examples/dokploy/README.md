@@ -203,3 +203,36 @@ export OPENAI_API_KEY=sk-...    # same key BomaSheet's AI features use
 ```
 
 Then message the bot on Telegram: `/start`.
+
+## Build memory, and the "cancelled" deployment status
+
+A deployment showing **cancelled** in Dokploy usually does not mean the build
+failed. Dokploy's `initCancelDeployments` runs at *its own* startup and flips
+every deployment still marked `running` to `cancelled`. So a cancelled status
+means Dokploy restarted mid-build -- and on a memory-starved host, that is the
+kernel's OOM killer taking out the Dokploy container while the build consumed
+everything.
+
+The trigger is the build's V8 heap cap. Upstream hardcodes
+`--max-old-space-size=8192`, telling V8 it may grow to 8GB. Given less free RAM
+than that, V8 keeps allocating rather than collecting, and the kernel kills
+something. `NODE_HEAP_MB` (default `4096`) makes this tunable:
+
+```sh
+NODE_HEAP_MB=3072 docker compose -f dockers/examples/dokploy/docker-compose.yaml build
+```
+
+Keep it comfortably below the host's free RAM. Raise it only if the build
+itself reports a JavaScript heap out-of-memory error -- that is the one case
+where the cap is genuinely too low, as opposed to too high.
+
+Swap gives the build somewhere to spill instead of dying:
+
+```sh
+fallocate -l 4G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+echo '/swapfile none swap sw 0 0' >> /etc/fstab
+```
+
+Note also that a cancelled deployment may still have produced a working image:
+`docker build` continues independently of Dokploy losing track of it. Check
+`docker ps --filter name=bomasheet` before assuming a rebuild is needed.

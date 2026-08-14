@@ -58,10 +58,22 @@ RUN set -eux; \
     echo "NEXT_PUBLIC_BUILD_VERSION=\"${BUILD_VERSION}\"" >> apps/nextjs-app/.env
 
 # Distinguish whether it is an integration test operation
+#
+# NODE_HEAP_MB caps V8's old-space. Upstream hardcodes 8192, which tells V8 it
+# may grow to 8GB: on a host with less free RAM than that, V8 keeps allocating
+# instead of collecting, and the kernel OOM-kills something rather than the
+# build simply running slower. On this VPS that took out the Dokploy container
+# itself mid-build, and Dokploy's startup sweep (initCancelDeployments) then
+# marked the still-"running" deployment as "cancelled" -- which reads like a
+# build failure but is really the host running out of memory.
+#
+# Keep this comfortably under the host's free RAM. Raise it only if the build
+# actually reports a JavaScript heap out-of-memory error.
+ARG NODE_HEAP_MB=4096
 RUN if [ -n "$INTEGRATION_TEST" ]; then \
         pnpm -F "./packages/**" run build; \
     else \
-        NODE_OPTIONS=--max-old-space-size=8192 pnpm g:build; \
+        NODE_OPTIONS=--max-old-space-size=${NODE_HEAP_MB} pnpm g:build; \
     fi
 
 
