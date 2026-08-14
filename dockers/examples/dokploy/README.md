@@ -166,3 +166,40 @@ string renderer. Not yet built: a dedicated prompt-editor form (field
 creation currently takes the type's default empty options) and an in-grid
 "Generate" trigger button -- real UI work, tracked as the next increment
 rather than rushed here.
+
+## BomaClaw (Telegram bot)
+
+A standalone app, `apps/telegram-bot`, that lets a user query and edit their
+own BomaSheet data by chatting with a Telegram bot. It is deliberately kept
+separate from BomaSheet itself:
+
+- **Not in the pnpm workspace.** `pnpm-workspace.yaml` excludes it, the same
+  way `apps/electron` is excluded. The main Dockerfile runs
+  `pnpm install --frozen-lockfile` then `pnpm -r run build`; a workspace
+  member with no matching lockfile entry would fail that install outright.
+  BomaClaw has its own `package-lock.json` and its own Dockerfile instead.
+- **A user connects with their own personal access token**, generated in
+  BomaSheet's own settings, sent to the bot once via `/connect <token>`. The
+  bot then calls BomaSheet's existing public REST API with that token --
+  BomaSheet's own permission system decides what the bot can and can't do.
+  No new access-control logic was written for this.
+- **Long-polls Telegram** rather than receiving webhooks, so it needs no
+  domain, TLS, or published port.
+- **No background job queue**, so there is no scheduled/proactive messaging
+  -- it only responds to messages sent to it.
+- Tokens are stored in a local SQLite file, AES-256-GCM encrypted with a
+  dedicated `BOMACLAW_ENCRYPTION_KEY` -- a separate secret from BomaSheet's
+  own, since this is a separately deployed app with its own lifecycle.
+
+Deploy after BomaSheet is already running (it looks up BomaSheet's project
+and public origin, not a value you pass in):
+
+```sh
+export DOKPLOY_URL=https://dokploy.bomalogic.com
+export DOKPLOY_API_KEY=...
+export TELEGRAM_BOT_TOKEN=...   # from @BotFather
+export OPENAI_API_KEY=sk-...    # same key BomaSheet's AI features use
+./deploy-bomaclaw.sh
+```
+
+Then message the bot on Telegram: `/start`.

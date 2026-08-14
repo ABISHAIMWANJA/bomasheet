@@ -91,3 +91,21 @@ for project in data:
 sys.exit(f"No compose service {service_name!r} in project {project_name!r}")
 '
 }
+
+# find_environment_id <project-name>
+find_environment_id() {
+  local project_name="$1"
+  api_query "project.all" | PROJECT="${project_name}" python3 -c '
+import json, os, sys
+data = json.load(sys.stdin)["result"]["data"]["json"]
+project_name = os.environ["PROJECT"]
+for project in data:
+    if project.get("name") != project_name:
+        continue
+    envs = project.get("environments", [])
+    if envs:
+        print(envs[0]["environmentId"])
+        sys.exit(0)
+sys.exit(f"No environment found in project {project_name!r}")
+'
+}
