@@ -77,7 +77,8 @@
       "user": "用户",
       "rating": "评分",
       "autoNumber": "自增数字",
-      "lookup": "从关联的表中查找"
+      "lookup": "从关联的表中查找",
+      "ai": "AI"
     }
   },
   "spaceRole": {

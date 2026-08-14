@@ -1,3 +1,4 @@
+export * from './ai.field';
 export * from './number.field';
 export * from './single-line-text.field';
 export * from './long-text.field';

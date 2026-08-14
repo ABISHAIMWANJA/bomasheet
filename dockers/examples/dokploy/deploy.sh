@@ -44,6 +44,14 @@ POSTGRES_DB="${POSTGRES_DB:-bomasheet}"
 # that's the lever for comping a specific customer more rows later.
 MAX_FREE_ROW_LIMIT="${MAX_FREE_ROW_LIMIT:-1000}"
 
+# AI chat and the AI field type both need an OpenAI-compatible endpoint. Left
+# empty by default -- both features error clearly rather than silently doing
+# nothing when unset. Set via ./set-ai-config.sh once you have a key, for a
+# fresh deploy or one already running.
+OPENAI_API_KEY="${OPENAI_API_KEY:-}"
+OPENAI_API_ENDPOINT="${OPENAI_API_ENDPOINT:-https://api.openai.com}"
+AI_FIELD_MODEL="${AI_FIELD_MODEL:-gpt-3.5-turbo}"
+
 echo "==> Creating project '${PROJECT_NAME}'"
 PROJECT_JSON=$(api "project.create" "$(
   NAME="${PROJECT_NAME}" pyjson "{'name': os.environ['NAME'], 'description': 'BomaSheet - AGPL fork of Teable'}"
@@ -77,7 +85,10 @@ POSTGRES_USER=${POSTGRES_USER}
 POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 SECRET_KEY=${SECRET_KEY}
 BACKEND_SESSION_SECRET=${BACKEND_SESSION_SECRET}
-MAX_FREE_ROW_LIMIT=${MAX_FREE_ROW_LIMIT}"
+MAX_FREE_ROW_LIMIT=${MAX_FREE_ROW_LIMIT}
+OPENAI_API_KEY=${OPENAI_API_KEY}
+OPENAI_API_ENDPOINT=${OPENAI_API_ENDPOINT}
+AI_FIELD_MODEL=${AI_FIELD_MODEL}"
 
 api "compose.update" "$(
   CID="${COMPOSE_ID}" URL="${REPO_URL}" BRANCH="${REPO_BRANCH}" CPATH="${COMPOSE_PATH}" \

@@ -2,6 +2,7 @@ import type { IFieldVo, DbFieldType, CellValueType } from '@teable/core';
 import { assertNever, FieldType } from '@teable/core';
 import type { Field } from '@teable/db-main-prisma';
 import { plainToInstance } from 'class-transformer';
+import { AiFieldDto } from './field-dto/ai-field.dto';
 import { AttachmentFieldDto } from './field-dto/attachment-field.dto';
 import { AutoNumberFieldDto } from './field-dto/auto-number-field.dto';
 import { CheckboxFieldDto } from './field-dto/checkbox-field.dto';
@@ -80,6 +81,8 @@ export function createFieldInstanceByVo(field: IFieldVo) {
       return plainToInstance(LastModifiedTimeFieldDto, field);
     case FieldType.User:
       return plainToInstance(UserFieldDto, field);
+    case FieldType.Ai:
+      return plainToInstance(AiFieldDto, field);
     case FieldType.Button:
     case FieldType.CreatedBy:
     case FieldType.LastModifiedBy:

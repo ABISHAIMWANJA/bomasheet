@@ -20,6 +20,7 @@ export enum FieldType {
   LastModifiedBy = 'lastModifiedBy',
   AutoNumber = 'autoNumber',
   Button = 'button',
+  Ai = 'ai',
 }
 
 export enum DbFieldType {

@@ -12,6 +12,7 @@ export const FIELD_TYPE_ORDER = [
   FieldType.Checkbox,
   FieldType.Attachment,
   FieldType.Formula,
+  FieldType.Ai,
   FieldType.Link,
   FieldType.Rollup,
   FieldType.AutoNumber,

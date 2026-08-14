@@ -2,6 +2,7 @@ import type { IFieldVo } from '@teable/core';
 import { assertNever, FieldType } from '@teable/core';
 import { plainToInstance } from 'class-transformer';
 import type { Doc } from 'sharedb/lib/client';
+import { AiField } from './ai.field';
 import { AttachmentField } from './attachment.field';
 import { AutoNumberField } from './auto-number.field';
 import { CheckboxField } from './checkbox.field';
@@ -54,6 +55,8 @@ export function createFieldInstance(field: IFieldVo, doc?: Doc<IFieldVo>) {
         return plainToInstance(LastModifiedTimeField, field);
       case FieldType.User:
         return plainToInstance(UserField, field);
+      case FieldType.Ai:
+        return plainToInstance(AiField, field);
       case FieldType.Button:
       case FieldType.CreatedBy:
       case FieldType.LastModifiedBy:

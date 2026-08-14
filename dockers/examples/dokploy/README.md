@@ -132,3 +132,37 @@ correct per-space quota needs a real accounting design, not a guessed hook;
 automation-run history is tracked in the database but this codebase's
 execution entry point wasn't traced far enough to hook safely. Both are
 buildable, just not blind.
+
+## AI field
+
+A new field type, `Ai`, backed by any OpenAI-compatible chat-completions API.
+The prompt references other fields with `{fieldName}`; generation is
+explicitly triggered per record via `POST
+/api/table/:tableId/record/:recordId/field/:fieldId/ai-generate`, not
+automatic on every save. This codebase has no background job queue, and an
+LLM call is slow, costly, and fallible in a way the existing synchronous
+formula/rollup calculation engine is not built to tolerate -- wiring it into
+that engine's automatic recalculation would block record saves on an
+external API call. A "regenerate on source-field change" mode needs a real
+queue and is a deliberate follow-up, not something guessed at here.
+
+Requires an OpenAI-compatible key. For a fresh deploy, `deploy.sh` picks up
+`OPENAI_API_KEY` (and optionally `OPENAI_API_ENDPOINT`, `AI_FIELD_MODEL`) if
+set in your shell. For a deployment already running:
+
+```sh
+export DOKPLOY_URL=https://dokploy.bomalogic.com
+export DOKPLOY_API_KEY=...
+OPENAI_API_KEY=sk-... ./set-ai-config.sh
+```
+
+The same key also powers the pre-existing AI chat feature -- both read
+`OPENAI_API_KEY`/`OPENAI_API_ENDPOINT`, so there is one credential to manage,
+not two.
+
+The frontend registers the field type (icon, label, selectable in the "add
+field" menu) and cell values render through the grid's existing generic
+string renderer. Not yet built: a dedicated prompt-editor form (field
+creation currently takes the type's default empty options) and an in-grid
+"Generate" trigger button -- real UI work, tracked as the next increment
+rather than rushed here.

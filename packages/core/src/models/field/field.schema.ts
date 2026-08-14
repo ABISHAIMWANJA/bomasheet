@@ -5,6 +5,7 @@ import { IdPrefix } from '../../utils';
 import { z } from '../../zod';
 import { CellValueType, DbFieldType, FieldType } from './constant';
 import {
+  aiFieldOptionsSchema,
   checkboxFieldOptionsSchema,
   numberFieldOptionsSchema,
   selectFieldOptionsSchema,
@@ -257,6 +258,8 @@ export const getOptionsSchema = (type: FieldType) => {
       return formulaFieldOptionsSchema;
     case FieldType.Rollup:
       return rollupFieldOptionsSchema;
+    case FieldType.Ai:
+      return aiFieldOptionsSchema;
     case FieldType.Link:
       return linkFieldOptionsRoSchema;
     case FieldType.CreatedTime:

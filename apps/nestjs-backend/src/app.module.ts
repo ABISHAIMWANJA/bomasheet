@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AccessTokenModule } from './features/access-token/access-token.module';
 import { AggregationOpenApiModule } from './features/aggregation/open-api/aggregation-open-api.module';
+import { AiFieldModule } from './features/ai-field/ai-field.module';
 import { AttachmentsModule } from './features/attachments/attachments.module';
 import { AuthModule } from './features/auth/auth.module';
 import { AutomationModule } from './features/automation/automation.module';
@@ -31,6 +32,7 @@ import { WsModule } from './ws/ws.module';
     FieldOpenApiModule,
     BaseModule,
     ChatModule,
+    AiFieldModule,
     AttachmentsModule,
     AutomationModule,
     WsModule,

@@ -14,6 +14,7 @@ import {
   ListChecks as MenuIcon,
   Search as SearchIcon,
   Star as RatingIcon,
+  Zap as AiIcon,
   LongText as LongTextIcon,
   Clock4 as CreatedTimeIcon,
   History as LastModifiedTimeIcon,
@@ -24,6 +25,7 @@ import {
 import { useCallback } from 'react';
 import { useTranslation } from '../context/app/i18n';
 import {
+  AiField,
   AttachmentField,
   AutoNumberField,
   CheckboxField,
@@ -98,6 +100,12 @@ export const useFieldStaticGetter = () => {
             title: t('field.title.formula'),
             defaultOptions: {},
             Icon: isLookup ? SearchIcon : FormulaIcon,
+          };
+        case FieldType.Ai:
+          return {
+            title: t('field.title.ai'),
+            defaultOptions: AiField.defaultOptions(),
+            Icon: isLookup ? SearchIcon : AiIcon,
           };
         case FieldType.Date:
           return {
