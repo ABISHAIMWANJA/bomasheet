@@ -69,7 +69,12 @@ RUN set -eux; \
 #
 # Keep this comfortably under the host's free RAM. Raise it only if the build
 # actually reports a JavaScript heap out-of-memory error.
-ARG NODE_HEAP_MB=4096
+#
+# 2048 suits a small VPS: the box this was debugged on has 7.8GB total but only
+# ~2.3GB actually available (Dokploy plus several other stacks hold the rest)
+# and no swap, so even 4096 would overcommit. With swap configured, or on a
+# host with real headroom, raising this speeds the build up.
+ARG NODE_HEAP_MB=2048
 RUN if [ -n "$INTEGRATION_TEST" ]; then \
         pnpm -F "./packages/**" run build; \
     else \
