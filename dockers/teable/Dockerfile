@@ -9,7 +9,13 @@ ARG BUILD_VERSION="1.0.0-alpha"
 FROM node:${NODE_VERSION}-bookworm AS deps
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && pnpm add npm-run-all2 zx -g
+# This RUN executes before package.json is copied in, so corepack has no
+# "packageManager" field to pin from here and would otherwise fetch whatever
+# is newest on npm. A pnpm release built for a newer corepack/Node than this
+# base image ships (its CJS shim uses a dynamic import() the vm context here
+# can't satisfy) breaks with ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING. Pin to
+# the version this repo's package.json and pnpm-lock.yaml already declare.
+RUN corepack enable && corepack prepare pnpm@8.15.5 --activate && pnpm add npm-run-all2 zx -g
 
 # Disabling some well-known postinstall scripts
 ENV HUSKY=0
