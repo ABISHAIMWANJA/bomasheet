@@ -26,7 +26,8 @@ COMPOSE_PATH="${COMPOSE_PATH:-./dockers/examples/dokploy/docker-compose.yaml}"
 # DNS record is needed. attach-domain.sh rewrites this later.
 DOKPLOY_HOST="${DOKPLOY_URL#*://}"
 DOKPLOY_HOST="${DOKPLOY_HOST%%/*}"
-PUBLIC_ORIGIN="${PUBLIC_ORIGIN:-http://${DOKPLOY_HOST}:3000}"
+# Must match docker-compose.yaml's published host port for the app service.
+PUBLIC_ORIGIN="${PUBLIC_ORIGIN:-http://${DOKPLOY_HOST}:3010}"
 
 # Secrets: generated here if not supplied, so they never live in the repo.
 SECRET_KEY="${SECRET_KEY:-$(openssl rand -hex 32)}"

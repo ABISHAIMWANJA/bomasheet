@@ -18,7 +18,12 @@ services:
         SENTRY_TRACING: 'false'
     restart: always
     ports:
-      - '3000:3000'
+      # Host port 3000 is taken by Dokploy's own dashboard on this VPS. This
+      # mapping only ever served phase-1 direct access before the domain was
+      # attached (dockers/examples/dokploy/deploy.sh); Traefik reaches the
+      # container over the internal Docker network on port 3000 regardless
+      # of what's published here, so domain routing is unaffected.
+      - '3010:3000'
     volumes:
       - bomasheet-data:/app/.assets:rw
     environment:
